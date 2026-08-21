@@ -24,7 +24,7 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
-      # 4. Upload WAR as artifact (optional, for later jobs)
+      # 4. Upload WAR as artifact
       - name: Upload WAR artifact
         uses: actions/upload-artifact@v4
         with:
@@ -44,17 +44,17 @@ jobs:
           name: myapp
 
       # 6. Deploy WAR via Tomcat Manager
-     - name: Deploy to Tomcat
-  env:
-    TOMCAT_URL: ${{ secrets.TOMCAT_URL }}
-    TOMCAT_USER: ${{ secrets.TOMCAT_USER }}
-    TOMCAT_PASSWORD: ${{ secrets.TOMCAT_PASSWORD }}
-  run: |
-    WAR_FILE=$(ls *.war)
+      - name: Deploy to Tomcat
+        env:
+          TOMCAT_URL: ${{ secrets.TOMCAT_URL }}
+          TOMCAT_USER: ${{ secrets.TOMCAT_USER }}
+          TOMCAT_PASSWORD: ${{ secrets.TOMCAT_PASSWORD }}
+        run: |
+          WAR_FILE=$(ls *.war)
 
-    echo "Deploying $WAR_FILE to Tomcat..."
+          echo "Deploying $WAR_FILE to Tomcat..."
 
-    curl -v \
-      -u "$TOMCAT_USER:$TOMCAT_PASSWORD" \
-      --upload-file "$WAR_FILE" \
-      "$TOMCAT_URL/manager/text/deploy?path=/myapp&update=true"
+          curl -v \
+            -u "$TOMCAT_USER:$TOMCAT_PASSWORD" \
+            --upload-file "$WAR_FILE" \
+            "$TOMCAT_URL/manager/text/deploy?path=/myapp&update=true"
